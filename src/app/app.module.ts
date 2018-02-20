@@ -11,6 +11,9 @@ import { TabsPage } from '../pages/tabs/tabs';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { DeviceOrientation } from '@ionic-native/device-orientation';
+import { Geolocation } from '@ionic-native/geolocation';
+import { NativeGeocoder } from '@ionic-native/native-geocoder';
+
 
 @NgModule({
   declarations: [
@@ -36,6 +39,8 @@ import { DeviceOrientation } from '@ionic-native/device-orientation';
     StatusBar,
     SplashScreen,
     DeviceOrientation,
+    Geolocation,
+    NativeGeocoder,
     {provide: ErrorHandler, useClass: IonicErrorHandler}
   ]
 })

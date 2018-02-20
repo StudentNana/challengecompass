@@ -4,11 +4,11 @@
   </ion-navbar>
 </ion-header>
 
-<ion-content padding>
-  <button id = "getHeading" (click)="getMagHeading()">GET Heading</button>
-  <span> Magnetic Heading: {{magneticHeading}}</span>
-  <br><br><br><br>
+<ion-content padding class="home">
+  <span class="info"> {{currentHeading}} °{{direction}}</span>
+  <br><br>
   <div>
-      <img id="compass" src="../assets/imgs/compass_3.jpg" width="50%">
+      <img id="triangle" src="assets/imgs/triangleRed.png" width="5%">
+      <img id="compass" src="assets/imgs/kompass.png" width="70%">
   </div>
 </ion-content>
