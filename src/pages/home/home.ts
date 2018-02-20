@@ -1,10 +1,13 @@
 import { Component, Input } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import { NavController, Platform } from 'ionic-angular';
 import { DeviceOrientation, DeviceOrientationCompassHeading, DeviceOrientationCompassOptions } from '@ionic-native/device-orientation';
 import { OnInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { Phase } from '../../app/phase';
 import { NativeGeocoder, NativeGeocoderReverseResult } from '@ionic-native/native-geocoder';
 import { Geolocation } from '@ionic-native/geolocation';
+import { StatusBar } from '@ionic-native/status-bar';
+import { SplashScreen } from '@ionic-native/splash-screen';
 
 @Component({
   selector: 'page-home',
@@ -16,11 +19,13 @@ export class HomePage implements OnInit{
   @Input() currentHeading: number;
   @Input() direction: string;
 
-  private options: DeviceOrientationCompassOptions = { frequency: 1000 };
+  private options: DeviceOrientationCompassOptions = { frequency: 50 };
   private cardDirection = {};
 
   constructor(public navCtrl: NavController, private deviceOrientation: DeviceOrientation, 
-              private platform: Platform, private geolocation: Geolocation, private nativeGeocoder: NativeGeocoder) {
+              private platform: Platform, private geolocation: Geolocation, private nativeGeocoder: NativeGeocoder,
+              private statusBar: StatusBar,
+              private splashScreen: SplashScreen) {
     this.cardDirection['N'] = new Phase(338, 22);
     this.cardDirection['NO'] = new Phase(22, 68);
     this.cardDirection['O'] = new Phase(68, 112);
@@ -40,6 +45,25 @@ export class HomePage implements OnInit{
       console.log('Cordova not accessible, add mock data if necessary');
     }
 
+    this.platform.ready().then(() => {
+      this.statusBar.styleDefault();
+      this.splashScreen.hide();
+      this.deviceOrientation.watchHeading(this.options).subscribe(
+        (data: DeviceOrientationCompassHeading) => {
+          this.currentHeading = data.magneticHeading;
+          // we should rotate the image counterclockwise
+          let imageAngle = - data.magneticHeading;
+          for (let key in this.cardDirection) {
+            let value = this.cardDirection[key];
+            if (value.contains(data.magneticHeading)) {
+              this.direction = key;
+            }
+          }
+          this.rotateCompass(imageAngle);
+          console.log(this.currentHeading);
+        }
+      );
+    });
     // get current location
     // this.geolocation.watchPosition().subscribe((data) => {
     //   this.nativeGeocoder.reverseGeocode(data.coords.latitude, data.coords.longitude)
@@ -48,22 +72,6 @@ export class HomePage implements OnInit{
     //                     })
     //                     .catch((error: any) => console.log(error));
     // });
-
-    this.deviceOrientation.watchHeading(this.options).subscribe(
-      (data: DeviceOrientationCompassHeading) => {
-        this.currentHeading = data.magneticHeading;
-        // we should rotate the image counterclockwise
-        let imageAngle = - data.magneticHeading;
-        for (let key in this.cardDirection) {
-          let value = this.cardDirection[key];
-          if (value.contains(data.magneticHeading)) {
-            this.direction = key;
-          }
-        }
-        this.rotateCompass(imageAngle);
-        console.log(this.currentHeading);
-        }
-      );
   }
 
   rotateCompass(angle:Number) {

@@ -1,11 +1,11 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Home</ion-title>
+    <ion-title>Compass</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding class="home">
-  <span class="info"> {{currentHeading}} °{{direction}}</span>
+  <span class="info"> {{currentHeading | number:'1.1-2'}} °{{direction}}</span>
   <br><br>
   <div>
       <img id="triangle" src="assets/imgs/triangleRed.png" width="5%">
